@@ -76,7 +76,7 @@ public final class MyTokenReader implements TokenReader {
           //end of quote
           if((""+source.charAt(index)).equals("\"") && inQuote){
               index++;
-              break;
+              return new StringToken(str.trim());
           }
           if(!inQuote && source.charAt(index)==' ' && str.trim().length()>=1){
               index++;
@@ -90,9 +90,8 @@ public final class MyTokenReader implements TokenReader {
               break;
           }else if(isSymbol(source.charAt(index))){
               // symbol by itself
-              str += source.charAt(index);
               index++;
-              break;
+              return new SymbolToken(source.charAt(index-1));
           }
           str+=source.charAt(index);
           index++;
@@ -100,12 +99,6 @@ public final class MyTokenReader implements TokenReader {
       }
 
       str = str.trim();
-
-      if(str.length()==1 && isSymbol(str.charAt(0)))
-          return new SymbolToken(str.charAt(0));
-
-      if(inQuote)
-          return new StringToken(str);
 
       // checks to make sure the digit is a double
       try {

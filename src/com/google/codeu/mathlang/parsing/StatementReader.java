@@ -55,13 +55,10 @@ public final class StatementReader {
 
     while (next != null && !next.equals(END_OF_STATEMENT)) {
       builder.append(next);
-      out.println("the next one: "+next);
-      out.println("in reader: "+next);
       next = reader.next();
     }
 
     if(next.equals(END_OF_STATEMENT)) {
-      //out.println(builder.build());
       return builder.build();
     }
 
@@ -69,7 +66,6 @@ public final class StatementReader {
     if (next == null) {
       throw new IOException("Reached end of stream while still reading statement.");
     }
-    //out.println("returning at least");
     return builder.build();
   }
 }
