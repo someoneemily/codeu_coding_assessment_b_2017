@@ -15,8 +15,14 @@
 package com.google.codeu.mathlang.impl;
 
 import java.io.IOException;
+import java.util.*;
+import static java.lang.System.*;
 
+import com.google.codeu.mathlang.core.tokens.NameToken;
+import com.google.codeu.mathlang.core.tokens.SymbolToken;
 import com.google.codeu.mathlang.core.tokens.Token;
+import com.google.codeu.mathlang.core.tokens.StringToken;
+import com.google.codeu.mathlang.core.tokens.NumberToken;
 import com.google.codeu.mathlang.parsing.TokenReader;
 
 // MY TOKEN READER
@@ -26,21 +32,81 @@ import com.google.codeu.mathlang.parsing.TokenReader;
 // You should not need to change any other files to get your token reader to
 // work with the test of the system.
 public final class MyTokenReader implements TokenReader {
-
+  private String source;
+  private int index;
   public MyTokenReader(String source) {
     // Your token reader will only be given a string for input. The string will
     // contain the whole source (0 or more lines).
+    this.source = source.trim();
+    index = 0;
   }
 
   @Override
   public Token next() throws IOException {
-    // Most of your work will take place here. For every call to |next| you should
-    // return a token until you reach the end. When there are no more tokens, you
-    // should return |null| to signal the end of input.
+      //out.println("start of token reader: "+source+" " +index);
 
-    // If for any reason you detect an error in the input, you may throw an IOException
-    // which will stop all execution.
+      if(index == source.length()) {
+          out.println("at the end returning null");
+          return null;
+      }
 
-    return null;
+      // if at end of string
+      if(source.charAt(index)==';') {
+          index++;
+          return new SymbolToken(';');
+      }
+
+      boolean inQuote = false;
+      String str = "";
+
+      while(index<source.length()){
+          //beginning of quote
+          if((""+source.charAt(index)).equals("\"") && !inQuote){
+              inQuote = true;
+              index++;
+              continue;
+          }
+          //end of quote
+          if((""+source.charAt(index)).equals("\"") && inQuote){
+              index++;
+              break;
+          }
+          if(!inQuote && source.charAt(index)==' ' && str.trim().length()>=1){
+              index++;
+              break;
+          }
+          if(source.charAt(index)==';'){
+              break;
+          }
+          str+=source.charAt(index);
+          index++;
+
+      }
+      //out.println("index: "+index+" " +source.length());
+      str = str.trim();
+
+      if(str.length()==1 && (str.charAt(0)=='=' || str.charAt(0)=='-' || str.charAt(0)=='+'))
+          return new SymbolToken(str.charAt(0));
+
+      if(inQuote)
+          return new StringToken(str);
+
+      // checks to make sure the digit is a double
+      try {
+          return new NumberToken(Double.parseDouble(str));
+      }catch(NumberFormatException e){
+          if(str.length()>=1)
+              return new NameToken(str);
+          return null;
+      }
+
+      // Most of your work will take place here. For every call to |next| you should
+      // return a token until you reach the end. When there are no more tokens, you
+      // should return |null| to signal the end of input.
+
+      // If for any reason you detect an error in the input, you may throw an IOException
+      // which will stop all execution.
+
+
   }
 }
