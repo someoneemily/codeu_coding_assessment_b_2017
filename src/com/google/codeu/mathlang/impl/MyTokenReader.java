@@ -85,6 +85,15 @@ public final class MyTokenReader implements TokenReader {
           if(source.charAt(index)==';'){
               break;
           }
+          // no space between operators and numbers
+          if(str.trim().length()>0 && isSymbol(source.charAt(index))){
+              break;
+          }else if(isSymbol(source.charAt(index))){
+              // symbol by itself
+              str += source.charAt(index);
+              index++;
+              break;
+          }
           str+=source.charAt(index);
           index++;
 
@@ -92,7 +101,7 @@ public final class MyTokenReader implements TokenReader {
 
       str = str.trim();
 
-      if(str.length()==1 && (str.charAt(0)=='=' || str.charAt(0)=='-' || str.charAt(0)=='+'))
+      if(str.length()==1 && isSymbol(str.charAt(0)))
           return new SymbolToken(str.charAt(0));
 
       if(inQuote)
@@ -107,5 +116,9 @@ public final class MyTokenReader implements TokenReader {
           throw new IOException("Error with input statement");
       }
 
+  }
+
+  public boolean isSymbol(char c){
+      return c == '=' || c == '+' || c == '-';
   }
 }
