@@ -15,6 +15,7 @@
 package com.google.codeu.mathlang.parsing;
 
 import java.io.IOException;
+import static java.lang.System.*;
 
 import com.google.codeu.mathlang.core.tokens.Token;
 import com.google.codeu.mathlang.core.tokens.SymbolToken;
@@ -44,6 +45,7 @@ public final class StatementReader {
     builder.reset();
 
     Token next = reader.next();
+    //out.println("the first one:"+next.equals(END_OF_STATEMENT));
 
     // If there is nothing when we start reading, assume that we made it to the
     // end of the stream safely.
@@ -53,14 +55,21 @@ public final class StatementReader {
 
     while (next != null && !next.equals(END_OF_STATEMENT)) {
       builder.append(next);
+      out.println("the next one: "+next);
+      out.println("in reader: "+next);
       next = reader.next();
+    }
+
+    if(next.equals(END_OF_STATEMENT)) {
+      //out.println(builder.build());
+      return builder.build();
     }
 
     // If next is null here it means that the last statement is incomplete.
     if (next == null) {
       throw new IOException("Reached end of stream while still reading statement.");
     }
-
+    //out.println("returning at least");
     return builder.build();
   }
 }
