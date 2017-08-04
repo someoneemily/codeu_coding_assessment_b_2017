@@ -41,16 +41,23 @@ public final class MyTokenReader implements TokenReader {
     index = 0;
   }
 
+
   @Override
   public Token next() throws IOException {
-      //out.println("start of token reader: "+source+" " +index);
 
+      // Most of your work will take place here. For every call to |next| you should
+      // return a token until you reach the end. When there are no more tokens, you
+      // should return |null| to signal the end of input.
+      // If for any reason you detect an error in the input, you may throw an IOException
+      // which will stop all execution.
+
+      // no more tokens
+      // return null to signal end of input
       if(index == source.length()) {
-          out.println("at the end returning null");
           return null;
       }
 
-      // if at end of string
+      // At end of string
       if(source.charAt(index)==';') {
           index++;
           return new SymbolToken(';');
@@ -82,7 +89,7 @@ public final class MyTokenReader implements TokenReader {
           index++;
 
       }
-      //out.println("index: "+index+" " +source.length());
+
       str = str.trim();
 
       if(str.length()==1 && (str.charAt(0)=='=' || str.charAt(0)=='-' || str.charAt(0)=='+'))
@@ -97,16 +104,8 @@ public final class MyTokenReader implements TokenReader {
       }catch(NumberFormatException e){
           if(str.length()>=1)
               return new NameToken(str);
-          return null;
+          throw new IOException("Error with input statement");
       }
-
-      // Most of your work will take place here. For every call to |next| you should
-      // return a token until you reach the end. When there are no more tokens, you
-      // should return |null| to signal the end of input.
-
-      // If for any reason you detect an error in the input, you may throw an IOException
-      // which will stop all execution.
-
 
   }
 }

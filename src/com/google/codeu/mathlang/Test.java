@@ -49,6 +49,28 @@ final class Test {
     });
 
     tester.test(
+            "Empty String",
+            lines(""),
+            new TestCriteria() {
+                @Override
+                public void onTestEnd(CallTable calls) throws Exception {
+                    calls.assertNext(null);
+                    calls.assertEnd();
+                }
+            });
+
+    tester.test(
+            "Empty Strings with spaces",
+            lines(" "),
+            new TestCriteria() {
+                @Override
+                public void onTestEnd(CallTable calls) throws Exception {
+                    calls.assertNext(null);
+                    calls.assertEnd();
+                }
+            });
+
+    tester.test(
         "One Comment On One Line",
         lines("note \"my comment\";"),
         new TestCriteria() {
