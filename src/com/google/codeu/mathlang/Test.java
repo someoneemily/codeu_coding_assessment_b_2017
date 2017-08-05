@@ -116,6 +116,28 @@ final class Test {
         });
 
     tester.test(
+            "Print Empty String",
+            lines("print \"\";"),
+            new TestCriteria() {
+                @Override
+                public void onTestEnd(CallTable calls) throws Exception {
+                    calls.assertNext("print", "");
+                    calls.assertEnd();
+                }
+            });
+
+    tester.test(
+            "Print Empty String with Space",
+            lines("print \" \";"),
+            new TestCriteria() {
+                @Override
+                public void onTestEnd(CallTable calls) throws Exception {
+                    calls.assertNext("print", "");
+                    calls.assertEnd();
+                }
+            });
+
+    tester.test(
         "Print One String",
         lines("print \"hello\";"),
         new TestCriteria() {
@@ -160,6 +182,17 @@ final class Test {
             calls.assertEnd();
           }
         });
+
+     tester.test(
+             "Assign variable as constant with no space",
+             lines("let x=5;"),
+             new TestCriteria() {
+                 @Override
+                 public void onTestEnd(CallTable calls) throws Exception {
+                     calls.assertNext("let", new AddOperation(5));
+                     calls.assertEnd();
+                 }
+             });
 
     tester.test(
         "Adding two constant",
@@ -248,6 +281,19 @@ final class Test {
             calls.assertEnd();
           }
         });
+
+    tester.test(
+            "Math with no spaces and negatives",
+            lines("let x=5+-3;",
+                    "print x;"),
+            new TestCriteria() {
+                @Override
+                public void onTestEnd(CallTable calls) throws Exception {
+                    calls.assertNext("let", new AddOperation(5), new AddOperation(-3));
+                    calls.assertNext("print", "2.0"); // use print to verify result
+                    calls.assertEnd();
+                }
+            });
   }
 
   private static String lines(String... lines) {
